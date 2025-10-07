@@ -4,7 +4,7 @@ from sage.all import *
 # [1]https://doc.sagemath.org/html/en/reference/matrices/index.html
 # [2]
 
-# tất cả các thuật đều trên full-rank lattice, nên chú ý nhập các ma trận vuông mới chạy oke, :v thực ra là do lười config ma trận chữ nhật
+# tất cả các thuật đều trên full-rank lattice, nên chú ý nhập các ma trận vuông mới chạy oke
 # using flatter:
 def flatter(M):
     import os
