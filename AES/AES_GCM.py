@@ -40,7 +40,7 @@ def ghash(H, A, C):
     for i in range(0, len(C) + (-len(C) % 16), 16):
         B = (C + b'\x00'*16)[i:i+16]
         X = (X + bytes_to_poly(B)) * H
-    L = bytes_to_poly((len(A)*8).to_bytes(8,'big') + (len(C)*8).to_bytes(8,'big'))
+    L = bytes_to_poly(length_block(len(A),len(C)))
     X = (X + L) * H
     return X
 
