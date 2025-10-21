@@ -50,7 +50,8 @@ def calculate_tag(key, ct, nonce, ad):
     H = bytes_to_poly(E(b'\x00'*16))
     J0 = nonce + b'\x00\x00\x00\x01'
     S  = ghash(H, ad, ct)
-    return bytes(x ^ y for x, y in zip(E(J0), poly_to_bytes(S)))
+    tag = S + bytes_to_poly(E(J0))
+    return poly_to_bytes(tag)
 
 def check():
     key = os.urandom(16)
@@ -65,6 +66,29 @@ def check():
 
     assert tag == calculate_tag(key, ct, nonce, ad)
     print("OK")
+# Forbidden attack
 
-if __name__ == "__main__":
-    check()
+
+
+def recover_possible_auth_keys(a1, c1, t1, a2, c2, t2):
+    '''
+    2 msgs được mã hóa bởi cùng 1 Auth key là H = Enc_k(null)
+    Chung authkey thì tức là chung key k    
+    a1: AAD của msg1 
+    c1: ct của msg1
+    t1: Auth Tag của msg1
+    tương tự 
+    '''
+    h = F["h"].gen()
+    s1 = ghash(h,a1,c1) + bytes_to_poly(t1)
+    s2 = ghash(h,a2,c2) + bytes_to_poly(t2)
+    for h, _ in (s1+s2).roots():
+        yield h 
+def forge_tag(h, a, c, t, target_a, target_c):
+    '''
+    giả mạo một tag hợp lệ cho cặp (target_a, target_c) từ một bộ (h,a,c,t) biết trước
+    điều kiện áp dụng là cả hai phải dùng chung nonce 
+    '''
+    s = bytes_to_poly(t) + ghash(h,a,c)
+    forged = s + ghash(h,target_a, target_c)
+    return poly_to_bytes(forged)
