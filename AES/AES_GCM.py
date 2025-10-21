@@ -1,10 +1,7 @@
 from sage.all import *
 from Crypto.Util.number import bytes_to_long, long_to_bytes
 from Crypto.Cipher import AES 
-from pwn import * 
-from tqdm import tqdm 
-import requests 
-import json 
+
 
 context.log_level = 'debug'
 
